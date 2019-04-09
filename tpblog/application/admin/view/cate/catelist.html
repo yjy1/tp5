@@ -1,0 +1,127 @@
+{include file='public/_head'/}
+
+<div class="main-container container-fluid">
+
+    <div class="page-container">
+
+        {include file='public/_left'/}
+
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-home"></i>&nbsp;栏目管理
+                    </li>
+                    <li>栏目列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="cateadd.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;栏目添加</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">栏目列表</span>
+                                <div class="widget-buttons">
+                                    {$cates->render()|raw|replace}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>排序</th>
+                                        <th>栏目名称</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {volist name="cates" id="vo"}
+                                    <tr>
+                                        <td><input type="text" size="1" name="sort" dataid="{$vo.id}" value="{$vo.sort}"></td>
+                                        <td><input type="text"  value="{$vo.catename}"></td>
+                                        <td>
+                                            <a href="{:url('admin/cate/edit',['id'=> $vo.id ])}" class="btn btn-azure btn-xs">编辑</a>
+                                            <a href="#"   class="btn btn-danger btn-xs cate-del" dataid="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+
+    </div>
+
+</div>
+
+{include file='public/_js'/}
+
+<script>
+    $(function () {
+        $(".pagination").addClass(".pagination-sm");
+
+        //change事件
+        $('input[name=sort]').change(function () {
+
+            var id= $(this).attr('dataid');
+            var sort= $(this).val();
+
+            $.ajax({
+                url: "{:url('admin/cate/sort')}",
+                type: 'post',
+                data: {id:id,sort:sort},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code==1){
+                        console.log('成功')
+                    }
+                    console.log(data.msg);
+                }
+            })
+
+            return false;
+        });
+
+        //删除栏目
+        $('.cate-del').click(function () {
+
+            var id= $(this).attr('dataid');
+            //询问框
+            layer.confirm('确认删除吗？',{
+                title: '删除栏目',
+                icon: 3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url: "{:url('admin/cate/delete')}",
+                    type: 'post',
+                    data: {id:id},
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                })
+            });
+
+            return false;   //不往下执行
+        })
+
+
+    })
+
+</script>
+
+</body>
+
+</html>

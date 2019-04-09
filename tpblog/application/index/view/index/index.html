@@ -1,0 +1,58 @@
+{extend name='public/base'/}
+{block name="title"}
+{$webinfo.webname} / {$catename|default='学无止'}
+{/block}
+
+{block name="content"}
+
+<div class="jumbotron">
+    <h1 class="animated fadeInDown">ThinkPHP 伍！</h1>
+    <p class="animated shake">
+        ThinkPHP 5.0完全开发手册
+        ThinkPHP是一个免费开源的，快速、简单的面向对象的轻量级PHP开发框架，
+        是为了敏捷WEB应用开发和简化企业应用开发而诞生的。ThinkPHP从诞生以来一直秉承简洁实用的设计原则
+        ，在保持出色的性能和至简的代码的同时，也注重易用性。遵循Apache2开源许可协议发布，
+        意味着你可以免费使用ThinkPHP，甚至允许把你基于ThinkPHP开发的应用开源或商业产品发布/销售。
+    </p>
+
+</div>
+
+<div class="row">
+    <div class="col-sm-12 col-md-8">
+        <div class="page-header h3">{$catename|default="文章"}列表</div>
+        <div class="article-list">
+
+            {volist name="articles" id='vo'}
+            <div class="article-list-item">
+                <a href="{:url('index/article/info',['id'=>$vo.id])}" class="title">{$vo.title}</a>
+                <div class="info">
+                    <span class="author">作者：{$vo.author}</span>-
+                    <span class="time">发布时间：{$vo.create_time}</span>-
+                    <span class="read">阅读：{$vo.click}</span>-
+                    <span class="comment">评论：{$vo.comm_num}</span>
+                </div>
+            </div>
+            {/volist}
+
+        </div>
+        <nav class="">
+            {$articles->render()|raw|replace}
+        </nav>
+    </div>
+    <div class="col-sm-12 col-md-4">
+        <div class="page-header h3">推荐文章</div>
+        <div class="topic-list">
+
+            {foreach $toparticle as $vo}
+
+            <div class="topic-list-item">
+                <a href="{:url('index/article/info',['id'=> $vo.id] )}" class="title">{$vo.title}</a>
+            </div>
+
+            {/foreach}
+
+
+        </div>
+    </div>
+</div>
+{/block}

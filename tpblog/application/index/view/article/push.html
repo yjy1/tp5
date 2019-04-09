@@ -1,0 +1,141 @@
+{extend name='public/base' /}
+{block name="title"}
+{$webinfo.webname} /
+{/block}
+
+{block name='content'}
+
+<div class="row">
+    <div class="col-sm-12 col-md-8">
+
+        <div class="article-comment">
+            <div class="page-header"><b>投稿</b></div>
+
+
+
+            <div class="widget-body">
+
+                <form class="form-horizontal">
+
+
+
+                    <div class="form-group">
+                        <label for="tags"  class="col-sm-2 control-label no-padding-right">标签</label>
+                        <div class="col-sm-6">
+                            <input type="text"  class="form-control" id="tags" name="tags" placeholder="标签" />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cate" class="col-sm-2 control-label no-padding-right">所属栏目</label>
+
+                        <div class="col-sm-6">
+                            <select id="cate"  name="cate" class="form-control">
+                                <option value="">请选择</option>
+                                {volist name='cates' id='vo'}
+                                <option value="{$vo.id}">{$vo.catename}</option>
+                                {/volist}
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="desc"  class="col-sm-2 control-label no-padding-right">概要</label>
+                        <div class="col-sm-6">
+                            <input type="text"   class="form-control" id="desc" name="desc" placeholder="概要" />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="title"  class="col-sm-2 control-label no-padding-right">标题</label>
+                        <div class="col-sm-6">
+                            <input type="text"  class="form-control" id="title" name="title" placeholder="标题" />
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label for="content"  class="col-sm-2 control-label no-padding-right">内容</label>
+                        <div class="col-sm-9">
+                            <textarea placeholder="2019/4/10" class="form-control" id="content" name="content" rows="10" cols=""></textarea>
+
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" id="push"  >发布</button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-4">
+        <div class="affix">
+            <div class="page-header h3">推荐文章</div>
+
+            <div class="topic-list">
+
+                {foreach $toparticle as $vo}
+                <div class="topic-list-item">
+                    <a href="{:url('index/article/info',['id'=> $vo.id] )}" class="title">{$vo.title}</a>
+                </div>
+                {/foreach}
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name='js'}
+<script>
+    $(function () {
+        $('#push').click(function () {
+
+            $.ajax({
+                    url: "{:url('index/article/push')}",
+                    type: 'post',
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 6,
+                                time: 400
+                            }, function () {
+                                location.href = data.url;
+                            });
+
+                        } else {
+                            layer.open({
+                                title: "发布失败",
+                                content: data.msg,
+                                icon: 5,
+                                anim: 6
+                            });
+                        }
+
+                    }
+                })
+
+            return false;
+        })
+    })
+</script>
+{/block}

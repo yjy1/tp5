@@ -1,0 +1,111 @@
+{include file='public/_head'/}
+
+<div class="main-container container-fluid">
+
+    <div class="page-container">
+
+        {include file='public/_left'/}
+
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-home"></i>&nbsp;栏目管理
+                    </li>
+                    <li>
+                        栏目编辑
+                    </li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">栏目编辑</span>
+                            </div>
+                            <div class="widget-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="catename"  class="col-sm-2 control-label no-padding-right">栏目名称</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" readonly value="{$cateInfo.catename}" class="form-control" id="catename" name="catename" placeholder="栏目名称" />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="new_sort" class="col-sm-2 control-label no-padding-right">栏目排序</label>
+
+                                        <div class="col-sm-6">
+                                            <select id="new_sort"  name="" class="form-control">
+                                                <option value="">请选择</option>
+                                                {for start='1' end='9'}
+                                                <option value="{$i}">{$i}</option>
+                                                {/for}
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button type="submit" class="btn btn-primary" id="cateEdit" cid="{$cateInfo.id}">修改</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+
+    </div>
+
+</div>
+
+{include file='public/_js' /}
+
+<script>
+
+    $("#cateEdit").click(function () {
+        var id= $(this).attr('cid');
+        var new_sort= $('#new_sort').val();
+
+        $.ajax({
+            url: "{:url('admin/cate/edit')}",
+            type: 'post',
+            data: {id:id,new_sort:new_sort},
+            dataType: 'json',
+            success: function (data) {
+                if (data.code==1){
+                    layer.msg(data.msg,{
+                        icon: 6,
+                        time: 400
+                    },function () {
+                        location.href= data.url
+                    })
+                }else {
+
+                    layer.open({
+                        title: "修改栏目",
+                        content: data.msg,
+                        icon: 5,
+                        anim: 6
+                    })
+                }
+             }
+        })
+        return false;
+    })
+
+</script>
+
+</body>
+
+</html>

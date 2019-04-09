@@ -1,0 +1,188 @@
+{include file='public/_head'/}
+
+
+<div class="main-container container-fluid">
+
+    <div class="page-container">
+
+        {include file='public/_left'/}
+
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;文章管理
+                    </li>
+                    <li>文章列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="articleadd.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加文章</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">添加文章</span>
+                                <div class="widget-buttons">
+                                    {$articles->render()|raw|replace}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>文章标题</th>
+                                        <th>标签</th>
+                                        <th>是否推荐</th>
+                                        <th>所属栏目</th>
+                                        <th>文章概要</th>
+                                        <th>文章内容</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+
+                                    {volist name='articles' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.title}</td>
+                                        <td>{$vo.tags}</td>
+                                        <td>{$vo.is_top ==1 ? '已推荐': '未推荐' }</td>
+                                        <td>{$vo.cate.catename}</td>
+                                        <td>{$vo.desc}</td>
+                                        <td>{$vo.content}</td>
+                                        <td>
+                                            {if $vo.is_top==1 }
+                                            <a href="#" class="btn btn-sm btn-active article_top" istop="{$vo.is_top}"
+                                               dataid="{$vo.id}">取消推荐</a>
+
+                                            {else/}
+                                            <a href="#" class="btn btn-sm btn-azure article_top" istop="{$vo.is_top}"
+                                               dataid="{$vo.id}">推荐</a>
+                                            {/if}
+                                            <a href="{:url('admin/article/edit',['id'=> $vo.id ])}" id="articleEdit"
+                                               class="btn btn-sm btn-warning">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger article_del" dataid="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+
+
+    </div>
+
+</div>
+
+{include file='public/_js' /}
+
+<script>
+
+    $(function () {
+        //推荐与取消推荐
+        $('.article_top').click(function () {
+            var id = $(this).attr('dataid');
+            var is_top = $(this).attr('istop');
+
+            if (is_top == 1) {
+
+                if (confirm('确定取消推荐吗?')) {
+                    $.ajax({
+                        url: "{:url('admin/article/top')}",
+                        type: 'post',
+                        data: {id: id, is_top: is_top},
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.code==1){
+                                layer.msg(data.msg,{
+                                    icon: 6,
+                                    time:600
+                                },function () {
+                                    location.href= data.url;
+                                });
+
+                            } else {
+                                layer.open({
+                                    title: "取消推荐失败",
+                                    content: data.msg,
+                                    icon: 5,
+                                    anim:6
+                                });
+                            }
+                        }
+                    })
+                }
+
+            } else {
+                if (confirm('确定推荐吗?')) {
+                    $.ajax({
+                        url: "{:url('admin/article/top')}",
+                        type: 'post',
+                        data: {id: id, is_top: is_top},
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.code==1){
+                                layer.msg(data.msg,{
+                                    icon: 6,
+                                    time:600
+                                },function () {
+                                    location.href= data.url;
+                                });
+
+                            } else {
+                                layer.open({
+                                    title: "推荐失败",
+                                    content: data.msg,
+                                    icon: 5,
+                                    anim:6
+                                });
+                            }
+                        }
+                    })
+                }
+            }
+
+            return false;
+        });
+
+        //删除
+        $('.article_del').click(function () {
+
+            var id= $(this).attr('dataid');
+
+           if (confirm('确认删除吗？')){
+               $.ajax({
+                   url: "{:url('admin/article/del')}",
+                   type: 'post',
+                   data: {id:id},
+                   dataType: 'json',
+                   success: function (data) {
+                       if (data.code==1){
+                           alert('删除成功！');
+                           location.href= data.url;
+                       } else {
+                           alert('删除失败');
+                       }
+                   }
+               })
+           }
+
+            return false;
+        })
+
+    })
+</script>
+
+</body>
+
+</html>

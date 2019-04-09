@@ -1,0 +1,109 @@
+{include file='public/_head'/}
+
+<div class="main-container container-fluid">
+
+    <div class="page-container">
+
+        {include file='public/_left'/}
+
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;评论管理
+                    </li>
+                    <li>评论编辑</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">评论编辑</span>
+                            </div>
+                            <div class="widget-body">
+                                <form action="" class="form-horizontal">
+
+
+                                    <div class="form-group">
+                                        <label for="article_id" class="control-label col-sm-2 no-padding-right">被评论文章id</label>
+                                        <div class="col-sm-6">
+                                            <input readonly value="{$comments.article_id}" type="text" class="form-control" id="article_id" name="article_id"
+                                                   placeholder="被评论文章id"/>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="member_id" class="control-label col-sm-2 no-padding-right">被评论用户id</label>
+                                        <div class="col-sm-6">
+                                            <input readonly type="text" value="{$comments.member_id}" class="form-control" id="member_id" name="member_id"
+                                                   placeholder="被评论用户id"/>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="content" class="control-label col-sm-2">评论内容</label>
+                                        <div class="col-sm-6">
+                                            <textarea readonly="readonly" name="content" id="content" cols="30" rows="10" class="">{$comments.content}</textarea>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button type="submit" id="commentEdit"  class="btn btn-primary">修改</button>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+
+    </div>
+
+</div>
+
+{include file='public/_js' /}
+
+<script src="/static/lib/ueditor/ueditor.config.js"></script>
+<script src="/static/lib/ueditor/ueditor.all.js"></script>
+<script>
+    $(function () {
+        //引入编辑器
+        UE.getEditor('content');
+
+        $('#commentEdit').click(function () {
+
+            $.ajax({
+                url: "{:url('admin/comment/edit')}",
+                type: 'post',
+                data: $('form').serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+
+            return false;
+        });
+
+    })
+</script>
+
+</body>
+
+</html>
